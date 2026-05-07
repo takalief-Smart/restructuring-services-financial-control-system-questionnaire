@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان نظام الرقابة المالية - إعادة الهيكلة | تكاليف</title>
+    <!-- Bootstrap RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            min-height: 100vh;
+            color: #1e3a3a;
+            padding: 20px;
+        }
+        
+        .main-header {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .company-badge {
+            background: rgba(82, 183, 136, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            border: 1px solid #52b788;
+            color: white;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+            background-color: #f8faf8;
+            border: 1px solid #e4f2e4;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-bottom: 2px solid #52b788;
+        }
+        
+        .btn-custom {
+            background: #52b788;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid #1e4a3b;
+        }
+        
+        .btn-custom:hover {
+            background: #2d6a4e;
+            transform: scale(1.05);
+            color: white;
+            box-shadow: 0 5px 20px rgba(82, 183, 136, 0.4);
+        }
+        
+        .btn-excel {
+            background: #1e4a3b;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .btn-excel:hover {
+            background: #2d6a4e;
+            color: white;
+        }
+        
+        .btn-pdf {
+            background: #4a6b5a;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .btn-pdf:hover {
+            background: #1e4a3b;
+            color: white;
+        }
+        
+        .form-label {
+            color: #2d6a4e;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e4f2e4;
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #52b788;
+            box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.25);
+        }
+        
+        .data-entry-section {
+            background: #f0f7f0;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 3px solid #52b788;
+        }
+        
+        .client-info-card {
+            background: linear-gradient(135deg, #f8faf8 0%, #ffffff 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #52b788;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .client-info-title {
+            color: #1e4a3b;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .client-info-title i {
+            color: #52b788;
+            margin-left: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-right: 4px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-radius: 50px 50px 0 0;
+            border-top: 3px solid #52b788;
+        }
+        
+        .footer-links {
+            color: #e4f2e4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links:hover {
+            color: #52b788;
+            padding-right: 5px;
+        }
+        
+        .contact-item {
+            margin-bottom: 10px;
+            color: #e4f2e4;
+        }
+        
+        .contact-item i {
+            color: #52b788;
+            margin-left: 10px;
+            width: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(82, 183, 136, 0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            color: #52b788;
+            transition: all 0.3s ease;
+            border: 1px solid #52b788;
+        }
+        
+        .social-icon:hover {
+            background: #52b788;
+            color: #0e3b2c;
+            transform: translateY(-3px);
+        }
+        
+        .nav-tabs-custom {
+            border-bottom: 3px solid #52b788;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            border-radius: 50px;
+            padding: 0.5rem;
+        }
+        
+        .nav-tabs-custom .nav-link {
+            color: white !important;
+            font-weight: 600;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs-custom .nav-link i {
+            color: white;
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            color: #1e4a3b !important;
+            background: #52b788;
+            border: 2px solid white;
+        }
+        
+        .nav-tabs-custom .nav-link.active i {
+            color: #1e4a3b;
+        }
+        
+        .preview-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #52b788;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed #e4f2e4;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            color: #1e4a3b;
+            width: 45%;
+        }
+        
+        .preview-value {
+            color: #2d6a4e;
+            width: 55%;
+            text-align: left;
+        }
+        
+        .control-item {
+            background: #f8faf8;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e4f2e4;
+        }
+        
+        .control-badge {
+            background: #52b788;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .weak-badge {
+            background: #e67e22;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .strong-badge {
+            background: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* PDF Export Container */
+        #pdf-export-container {
+            position: fixed;
+            top: -99999px;
+            left: -99999px;
+            width: 800px;
+            background: white;
+            z-index: 9999;
+            padding: 30px;
+            opacity: 0;
+            pointer-events: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .pdf-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            direction: rtl;
+        }
+        
+        .pdf-cover {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            border: 4px solid #52b788;
+            text-align: center;
+        }
+        
+        .pdf-section-title {
+            color: #1e4a3b;
+            font-size: 20px;
+            font-weight: 800;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+            border: 1px solid #52b788;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .pdf-table th {
+            background: #1e4a3b;
+            color: white;
+            padding: 10px 8px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .pdf-table td {
+            padding: 8px;
+            border: 1px solid #e4f2e4;
+            text-align: center;
+            font-size: 11px;
+        }
+        
+        .pdf-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            border-radius: 15px;
+            border: 2px solid #52b788;
+        }
+        
+        .currency-symbol {
+            font-weight: 600;
+        }
+        
+        .rating-scale {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .rating-option {
+            background: #e4f2e4;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+        
+        .rating-option.selected {
+            background: #52b788;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="main-header text-center no-print">
+        <div class="container">
+            <span class="company-badge mb-3">تكاليف | حلول أعمال ذكية</span>
+            <h1 class="display-4 fw-bold mt-3" style="color: white;">
+                <i class="fas fa-shield-alt me-3"></i>
+                استبيان نظام الرقابة المالية
+            </h1>
+            <p class="lead" style="color: white;">خدمة الاستشارات المؤقتة لإعادة الهيكلة - تقييم فعالية نظام الرقابة المالية الداخلية</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs-custom nav-fill" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="data-entry-tab" data-bs-toggle="tab" data-bs-target="#dataEntry" type="button" role="tab">
+                    <i class="fas fa-edit me-2"></i> استبيان المعلومات
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview" type="button" role="tab">
+                    <i class="fas fa-eye me-2"></i> معاينة التقرير
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Tab 1: Data Entry -->
+            <div class="tab-pane fade show active" id="dataEntry" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-shield-alt me-2"></i> استبيان نظام الرقابة المالية - إعادة الهيكلة
+                    </div>
+                    <div class="card-body">
+                        <!-- بيانات المنشأة -->
+                        <div class="client-info-card">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="client-info-title"><i class="fas fa-building"></i> بيانات المنشأة</div>
+                                    <div class="mb-3"><label class="form-label required-field">اسم المنشأة</label><input type="text" class="form-control" id="companyName" placeholder="أدخل اسم المنشأة"></div>
+                                    <div class="mb-3"><label class="form-label">النشاط الرئيسي</label><input type="text" class="form-control" id="businessActivity" placeholder="مثال: تصنيع / تجارة / خدمات"></div>
+                                    <div class="mb-3"><label class="form-label">السنة المالية الحالية</label><input type="text" class="form-control" id="currentFiscalYear" placeholder="مثال: 2025"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="client-info-title"><i class="fas fa-address-card"></i> بيانات المسؤول</div>
+                                    <div class="mb-3"><label class="form-label required-field">اسم المسؤول عن الرقابة المالية</label><input type="text" class="form-control" id="contactPerson" placeholder="أدخل اسم المسؤول"></div>
+                                    <div class="mb-3"><label class="form-label required-field">المسمى الوظيفي</label><input type="text" class="form-control" id="jobTitle" placeholder="مثال: المدير المالي / مدير الرقابة الداخلية"></div>
+                                    <div class="mb-3"><label class="form-label required-field">البريد الإلكتروني</label><input type="email" class="form-control" id="clientEmail" placeholder="example@company.com"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-4"><div class="mb-3"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-control" id="clientPhone" placeholder="رقم الهاتف"></div></div>
+                                <div class="col-md-4"><div class="mb-3"><label class="form-label">تاريخ التعبئة</label><input type="date" class="form-control" id="submissionDate" value="2026-03-28"></div></div>
+                                <div class="col-md-4"><div class="mb-3"><label class="form-label">العملة المستخدمة</label><select class="form-select" id="currencySelect"><option value="EGP" selected>جنيه مصري (EGP)</option><option value="SAR">ريال سعودي (SAR)</option><option value="AED">درهم إماراتي (AED)</option><option value="USD">دولار أمريكي (USD)</option></select></div></div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الأول: الهيكل التنظيمي للرقابة المالية -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-sitemap me-2"></i> القسم الأول: الهيكل التنظيمي للرقابة المالية</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل توجد إدارة مستقلة للرقابة المالية الداخلية؟</label><select class="form-select" id="hasInternalAudit"><option value="">اختر...</option><option value="نعم، إدارة مستقلة">نعم، إدارة مستقلة</option><option value="نعم، ولكن تابعة للإدارة المالية">نعم، ولكن تابعة للإدارة المالية</option><option value="لا توجد إدارة مستقلة">لا توجد إدارة مستقلة</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">عدد العاملين في الرقابة المالية</label><input type="number" class="form-control" id="auditStaffCount" placeholder="عدد الموظفين"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم الإبلاغ المباشر إلى مجلس الإدارة؟</label><select class="form-select" id="reportsToBoard"><option value="">اختر...</option><option value="نعم، مباشرة إلى مجلس الإدارة">نعم، مباشرة إلى مجلس الإدارة</option><option value="إلى الإدارة التنفيذية">إلى الإدارة التنفيذية</option><option value="إلى الإدارة المالية">إلى الإدارة المالية</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">تقييم استقلالية الرقابة المالية</label><select class="form-select" id="independenceLevel"><option value="">اختر...</option><option value="عالية - مستقلة تماماً">عالية - مستقلة تماماً</option><option value="متوسطة - استقلالية محدودة">متوسطة - استقلالية محدودة</option><option value="منخفضة - تابعة للإدارة">منخفضة - تابعة للإدارة</option></select></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الثاني: السياسات والإجراءات المالية -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-file-alt me-2"></i> القسم الثاني: السياسات والإجراءات المالية</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3"><label class="form-label">هل يوجد دليل سياسات وإجراءات مالية موثق؟</label><select class="form-select" id="hasFinancialManual"><option value="">اختر...</option><option value="نعم، محدث ومعتمد">نعم، محدث ومعتمد</option><option value="نعم، ولكنه غير محدث">نعم، ولكنه غير محدث</option><option value="لا يوجد">لا يوجد</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">مدى وضوح سياسات التفويض والصلاحيات المالية</label><select class="form-select" id="authorizationClarity"><option value="">اختر...</option><option value="واضحة جداً">واضحة جداً</option><option value="واضحة إلى حد ما">واضحة إلى حد ما</option><option value="غير واضحة">غير واضحة</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم فصل الواجبات والمسؤوليات المالية؟</label><select class="form-select" id="dutiesSeparation"><option value="">اختر...</option><option value="نعم، بشكل كامل">نعم، بشكل كامل</option><option value="جزئياً">جزئياً</option><option value="لا يوجد فصل">لا يوجد فصل</option></select></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3"><label class="form-label">نقاط الضعف في السياسات والإجراءات الحالية</label><textarea class="form-control" id="policyWeaknesses" rows="3" placeholder="اذكر نقاط الضعف في السياسات والإجراءات المالية"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الثالث: ضوابط المشتريات والمخازن -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-shopping-cart me-2"></i> القسم الثالث: ضوابط المشتريات والمخازن</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">إجراءات طلب الشراء والاعتماد</label><select class="form-select" id="purchaseProcedure"><option value="">اختر...</option><option value="موثقة ومطبقة بالكامل">موثقة ومطبقة بالكامل</option><option value="موجودة ولكن غير مطبقة بالكامل">موجودة ولكن غير مطبقة بالكامل</option><option value="غير موثقة">غير موثقة</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">آلية اختيار الموردين</label><select class="form-select" id="supplierSelection"><option value="">اختر...</option><option value="منافسة وعطاءات رسمية">منافسة وعطاءات رسمية</option><option value="قائمة موردين معتمدين">قائمة موردين معتمدين</option><option value="اختيار عشوائي">اختيار عشوائي</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل تتم جرد دوري للمخزون؟</label><select class="form-select" id="inventoryCount"><option value="">اختر...</option><option value="نعم، بشكل دوري ومنتظم">نعم، بشكل دوري ومنتظم</option><option value="نعم، ولكن غير منتظم">نعم، ولكن غير منتظم</option><option value="لا يتم الجرد">لا يتم الجرد</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">وجود فروق جرد خلال السنة الماضية</label><input type="text" class="form-control" id="inventoryVariance" placeholder="القيمة التقريبية"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الرابع: ضوابط النقدية والبنوك -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-university me-2"></i> القسم الرابع: ضوابط النقدية والبنوك</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل تتم مطابقة كشوف البنوك شهرياً؟</label><select class="form-select" id="bankReconciliation"><option value="">اختر...</option><option value="نعم، شهرياً">نعم، شهرياً</option><option value="نعم، ولكن بشكل غير منتظم">نعم، ولكن بشكل غير منتظم</option><option value="لا تتم المطابقة">لا تتم المطابقة</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">عدد التوقيعات المطلوبة للصرف</label><select class="form-select" id="signatureRequired"><option value="">اختر...</option><option value="توقيعان أو أكثر">توقيعان أو أكثر</option><option value="توقيع واحد">توقيع واحد</option><option value="لا يوجد توقيع رسمي">لا يوجد توقيع رسمي</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم فصل وظيفة الصرف عن المحاسبة؟</label><select class="form-select" id="cashSeparation"><option value="">اختر...</option><option value="نعم، مفصولة بالكامل">نعم، مفصولة بالكامل</option><option value="جزئياً">جزئياً</option><option value="لا يوجد فصل">لا يوجد فصل</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم الجرد المفاجئ للخزينة؟</label><select class="form-select" id="suddenCashCount"><option value="">اختر...</option><option value="نعم، بشكل دوري ومفاجئ">نعم، بشكل دوري ومفاجئ</option><option value="نادراً">نادراً</option><option value="لا يتم">لا يتم</option></select></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الخامس: ضوابط الإيرادات والمبيعات -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-chart-line me-2"></i> القسم الخامس: ضوابط الإيرادات والمبيعات</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل توجد ضوابط لاستلام النقد من العملاء؟</label><select class="form-select" id="cashReceiptControls"><option value="">اختر...</option><option value="نعم، إجراءات موثقة">نعم، إجراءات موثقة</option><option value="موجودة ولكن غير كافية">موجودة ولكن غير كافية</option><option value="لا توجد ضوابط">لا توجد ضوابط</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم إصدار فواتير معتمدة لجميع المبيعات؟</label><select class="form-select" id="invoicingSystem"><option value="">اختر...</option><option value="نعم، نظام آلي">نعم، نظام آلي</option><option value="نعم، يدوي">نعم، يدوي</option><option value="لا يتم إصدار فواتير للجميع">لا يتم إصدار فواتير للجميع</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">نسبة الإيرادات غير المسجلة أو المتأخرة</label><input type="text" class="form-control" id="unrecordedRevenue" placeholder="مثال: 5%"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">نسبة الإعفاءات والخصومات غير المبررة</label><input type="text" class="form-control" id="unjustifiedDiscounts" placeholder="مثال: 3%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم السادس: تقييم الرقابة المالية -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-chart-simple me-2"></i> القسم السادس: تقييم الرقابة المالية</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3"><label class="form-label">فعالية نظام الرقابة المالية</label><select class="form-select" id="controlEffectiveness"><option value="">اختر...</option><option value="عالية - فعال جداً">عالية - فعال جداً</option><option value="متوسطة - يحتاج تحسين">متوسطة - يحتاج تحسين</option><option value="منخفضة - ضعيف">منخفضة - ضعيف</option></select></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3"><label class="form-label">مدى الالتزام بالضوابط المالية</label><select class="form-select" id="complianceLevel"><option value="">اختر...</option><option value="التزام كامل">التزام كامل</option><option value="التزام جزئي">التزام جزئي</option><option value="عدم التزام">عدم التزام</option></select></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3"><label class="form-label">عدد المخالفات المالية المكتشفة (آخر سنة)</label><input type="number" class="form-control" id="violationsCount" placeholder="عدد المخالفات"></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3"><label class="form-label">أبرز نقاط الضعف في نظام الرقابة المالية</label><textarea class="form-control" id="controlWeaknesses" rows="3" placeholder="اذكر أبرز نقاط الضعف والثغرات"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم السابع: التدقيق والمراجعة -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-search me-2"></i> القسم السابع: التدقيق والمراجعة</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل يتم مراجعة حسابات سنوية من مراجع خارجي؟</label><select class="form-select" id="externalAudit"><option value="">اختر...</option><option value="نعم، بشكل سنوي">نعم، بشكل سنوي</option><option value="نعم، ولكن بشكل غير منتظم">نعم، ولكن بشكل غير منتظم</option><option value="لا يتم المراجعة الخارجية">لا يتم المراجعة الخارجية</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">نتيجة المراجعة الخارجية الأخيرة</label><select class="form-select" id="auditResult"><option value="">اختر...</option><option value="نظيف - بدون تحفظات">نظيف - بدون تحفظات</option><option value="مع تحفظات">مع تحفظات</option><option value="غير نظيف - مخالفات جوهرية">غير نظيف - مخالفات جوهرية</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">هل توجد لجنة مراجعة مستقلة؟</label><select class="form-select" id="auditCommittee"><option value="">اختر...</option><option value="نعم، لجنة مستقلة">نعم، لجنة مستقلة</option><option value="لا توجد لجنة">لا توجد لجنة</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">توصيات المراجعة غير المنفذة</label><input type="text" class="form-control" id="unimplementedRecommendations" placeholder="عدد التوصيات غير المنفذة"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الثامن: تقييم المخاطر المالية -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-chart-pie me-2"></i> القسم الثامن: تقييم المخاطر المالية</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">مستوى المخاطر المالية الحالية</label><select class="form-select" id="financialRiskLevel"><option value="">اختر...</option><option value="منخفض">منخفض</option><option value="متوسط">متوسط</option><option value="مرتفع">مرتفع</option></select></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3"><label class="form-label">أبرز المخاطر المالية التي تواجه المنشأة</label><textarea class="form-control" id="financialRisks" rows="2" placeholder="اذكر أبرز المخاطر المالية"></textarea></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3"><label class="form-label">الإجراءات المقترحة لتعزيز الرقابة المالية</label><textarea class="form-control" id="improvementSuggestions" rows="3" placeholder="اذكر المقترحات لتحسين نظام الرقابة المالية"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- القسم التاسع: معلومات إضافية -->
+                        <div class="data-entry-section">
+                            <h4 class="mb-4" style="color: #1e4a3b;"><i class="fas fa-info-circle me-2"></i> القسم التاسع: معلومات إضافية</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3"><label class="form-label">أي معلومات إضافية حول نظام الرقابة المالية</label><textarea class="form-control" id="additionalInfo" rows="4" placeholder="أي معلومات إضافية ترى أنها مهمة لفهم نظام الرقابة المالية الحالي"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-custom btn-lg" onclick="refreshPreview()"><i class="fas fa-sync-alt me-2"></i> تحديث المعاينة</button>
+                            <button class="btn btn-custom btn-lg mx-2" onclick="resetForm()"><i class="fas fa-undo me-2"></i> إعادة تعيين</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Preview -->
+            <div class="tab-pane fade" id="preview" role="tabpanel">
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-alt me-2"></i> معاينة تقرير نظام الرقابة المالية</div>
+                    <div class="card-body" id="previewContent"></div>
+                </div>
+                <div class="text-center mb-4 no-print">
+                    <button class="btn btn-excel btn-lg mx-2" onclick="exportToExcel()"><i class="fas fa-file-excel me-2"></i> تصدير (Excel)</button>
+                    <button class="btn btn-pdf btn-lg mx-2" onclick="exportToPDF(event)"><i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)</button>
+                    <button class="btn btn-custom btn-lg mx-2" onclick="window.print()"><i class="fas fa-print me-2"></i> طباعة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer no-print">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4"><h5 style="color: #52b788;">تكاليف - حلول أعمال ذكية</h5><p style="color: #e4f2e4;">نقدم خدمات استشارات إعادة الهيكلة وتقييم أنظمة الرقابة المالية.</p></div>
+                <div class="col-md-4 mb-4"><h5 style="color: #52b788;"><i class="fas fa-address-card me-2"></i>معلومات الاتصال</h5><div class="contact-item"><i class="fas fa-map-marker-alt"></i> القاهرة - مصر</div><div class="contact-item"><i class="fas fa-phone-alt"></i><a href="tel:+201044391177" class="footer-links">+20 104 439 1177</a></div><div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:info@takalief.com" class="footer-links">info@takalief.com</a></div><div class="contact-item"><i class="fas fa-globe"></i><a href="https://www.takalief.com" class="footer-links" target="_blank">www.takalief.com</a></div></div>
+                <div class="col-md-4 mb-4"><h5 style="color: #52b788;"><i class="fas fa-share-alt me-2"></i>تابعنا على</h5><div class="text-center"><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a><a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a><a href="#" class="social-icon"><i class="fab fa-instagram"></i></a><a href="#" class="social-icon"><i class="fab fa-youtube"></i></a><a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a></div></div>
+            </div>
+            <hr>
+            <div class="row mt-3"><div class="col-md-6 text-md-start text-center"><p class="mb-0" style="color: #e4f2e4;"><i class="fas fa-copyright me-2" style="color: #52b788;"></i>2026 تكاليف - حلول أعمال ذكية. جميع الحقوق محفوظة</p></div><div class="col-md-6 text-md-end text-center"><a href="#" class="footer-links me-3">سياسة الخصوصية</a><a href="#" class="footer-links me-3">شروط الاستخدام</a><a href="#" class="footer-links">الدعم الفني</a></div></div>
+        </div>
+    </footer>
+
+    <div id="pdf-export-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let selectedCurrency = 'EGP';
+        const currencySymbols = { 'EGP': 'جنيه', 'SAR': 'ريال', 'AED': 'درهم', 'USD': 'دولار' };
+        const currencyNames = { 'EGP': 'جنيه مصري', 'SAR': 'ريال سعودي', 'AED': 'درهم إماراتي', 'USD': 'دولار أمريكي' };
+        
+        document.getElementById('currencySelect').addEventListener('change', function() {
+            selectedCurrency = this.value;
+            const symbol = currencySymbols[selectedCurrency];
+            document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+        });
+        
+        function getFieldValue(id, defaultValue = '—') {
+            const element = document.getElementById(id);
+            return element && element.value.trim() !== '' ? element.value.trim() : defaultValue;
+        }
+        
+        function getSelectText(id, defaultValue = '—') {
+            const select = document.getElementById(id);
+            if (select && select.options[select.selectedIndex] && select.options[select.selectedIndex].value !== '') {
+                return select.options[select.selectedIndex].text;
+            }
+            return defaultValue;
+        }
+        
+        function refreshPreview() {
+            const previewHtml = `
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-building me-2"></i>بيانات المنشأة</h4>
+                <div class="preview-item"><span class="preview-label">اسم المنشأة</span><span class="preview-value">${getFieldValue('companyName')}</span></div>
+                <div class="preview-item"><span class="preview-label">النشاط الرئيسي</span><span class="preview-value">${getFieldValue('businessActivity')}</span></div>
+                <div class="preview-item"><span class="preview-label">السنة المالية</span><span class="preview-value">${getFieldValue('currentFiscalYear')}</span></div>
+                <div class="preview-item"><span class="preview-label">المسؤول عن الرقابة</span><span class="preview-value">${getFieldValue('contactPerson')}</span></div>
+                <div class="preview-item"><span class="preview-label">المسمى الوظيفي</span><span class="preview-value">${getFieldValue('jobTitle')}</span></div>
+                <div class="preview-item"><span class="preview-label">البريد الإلكتروني</span><span class="preview-value">${getFieldValue('clientEmail')}</span></div>
+                <div class="preview-item"><span class="preview-label">رقم الهاتف</span><span class="preview-value">${getFieldValue('clientPhone')}</span></div>
+                <div class="preview-item"><span class="preview-label">العملة</span><span class="preview-value">${currencyNames[selectedCurrency]}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-sitemap me-2"></i>الهيكل التنظيمي للرقابة المالية</h4>
+                <div class="preview-item"><span class="preview-label">إدارة مستقلة للرقابة</span><span class="preview-value">${getSelectText('hasInternalAudit')}</span></div>
+                <div class="preview-item"><span class="preview-label">عدد العاملين</span><span class="preview-value">${getFieldValue('auditStaffCount')}</span></div>
+                <div class="preview-item"><span class="preview-label">جهة الإبلاغ</span><span class="preview-value">${getSelectText('reportsToBoard')}</span></div>
+                <div class="preview-item"><span class="preview-label">استقلالية الرقابة</span><span class="preview-value">${getSelectText('independenceLevel')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-file-alt me-2"></i>السياسات والإجراءات المالية</h4>
+                <div class="preview-item"><span class="preview-label">دليل السياسات</span><span class="preview-value">${getSelectText('hasFinancialManual')}</span></div>
+                <div class="preview-item"><span class="preview-label">وضوح التفويضات</span><span class="preview-value">${getSelectText('authorizationClarity')}</span></div>
+                <div class="preview-item"><span class="preview-label">فصل الواجبات</span><span class="preview-value">${getSelectText('dutiesSeparation')}</span></div>
+                <div class="preview-item"><span class="preview-label">نقاط الضعف</span><span class="preview-value">${getFieldValue('policyWeaknesses')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-shopping-cart me-2"></i>ضوابط المشتريات والمخازن</h4>
+                <div class="preview-item"><span class="preview-label">إجراءات الشراء</span><span class="preview-value">${getSelectText('purchaseProcedure')}</span></div>
+                <div class="preview-item"><span class="preview-label">اختيار الموردين</span><span class="preview-value">${getSelectText('supplierSelection')}</span></div>
+                <div class="preview-item"><span class="preview-label">جرد المخزون</span><span class="preview-value">${getSelectText('inventoryCount')}</span></div>
+                <div class="preview-item"><span class="preview-label">فروق الجرد</span><span class="preview-value">${getFieldValue('inventoryVariance')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-university me-2"></i>ضوابط النقدية والبنوك</h4>
+                <div class="preview-item"><span class="preview-label">مطابقة كشوف البنوك</span><span class="preview-value">${getSelectText('bankReconciliation')}</span></div>
+                <div class="preview-item"><span class="preview-label">التوقيعات المطلوبة</span><span class="preview-value">${getSelectText('signatureRequired')}</span></div>
+                <div class="preview-item"><span class="preview-label">فصل الصرف عن المحاسبة</span><span class="preview-value">${getSelectText('cashSeparation')}</span></div>
+                <div class="preview-item"><span class="preview-label">الجرد المفاجئ للخزينة</span><span class="preview-value">${getSelectText('suddenCashCount')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-chart-line me-2"></i>ضوابط الإيرادات والمبيعات</h4>
+                <div class="preview-item"><span class="preview-label">ضوابط استلام النقد</span><span class="preview-value">${getSelectText('cashReceiptControls')}</span></div>
+                <div class="preview-item"><span class="preview-label">نظام الفواتير</span><span class="preview-value">${getSelectText('invoicingSystem')}</span></div>
+                <div class="preview-item"><span class="preview-label">إيرادات غير مسجلة</span><span class="preview-value">${getFieldValue('unrecordedRevenue')}</span></div>
+                <div class="preview-item"><span class="preview-label">خصومات غير مبررة</span><span class="preview-value">${getFieldValue('unjustifiedDiscounts')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-chart-simple me-2"></i>تقييم الرقابة المالية</h4>
+                <div class="preview-item"><span class="preview-label">فعالية النظام</span><span class="preview-value">${getSelectText('controlEffectiveness')}</span></div>
+                <div class="preview-item"><span class="preview-label">مدى الالتزام</span><span class="preview-value">${getSelectText('complianceLevel')}</span></div>
+                <div class="preview-item"><span class="preview-label">عدد المخالفات</span><span class="preview-value">${getFieldValue('violationsCount')}</span></div>
+                <div class="preview-item"><span class="preview-label">نقاط الضعف</span><span class="preview-value">${getFieldValue('controlWeaknesses')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-search me-2"></i>التدقيق والمراجعة</h4>
+                <div class="preview-item"><span class="preview-label">مراجعة خارجية</span><span class="preview-value">${getSelectText('externalAudit')}</span></div>
+                <div class="preview-item"><span class="preview-label">نتيجة المراجعة</span><span class="preview-value">${getSelectText('auditResult')}</span></div>
+                <div class="preview-item"><span class="preview-label">لجنة مراجعة مستقلة</span><span class="preview-value">${getSelectText('auditCommittee')}</span></div>
+                <div class="preview-item"><span class="preview-label">توصيات غير منفذة</span><span class="preview-value">${getFieldValue('unimplementedRecommendations')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-chart-pie me-2"></i>تقييم المخاطر المالية</h4>
+                <div class="preview-item"><span class="preview-label">مستوى المخاطر</span><span class="preview-value">${getSelectText('financialRiskLevel')}</span></div>
+                <div class="preview-item"><span class="preview-label">أبرز المخاطر</span><span class="preview-value">${getFieldValue('financialRisks')}</span></div>
+                <div class="preview-item"><span class="preview-label">مقترحات التحسين</span><span class="preview-value">${getFieldValue('improvementSuggestions')}</span></div></div>
+                
+                <div class="preview-card"><h4 style="color: #1e4a3b;"><i class="fas fa-info-circle me-2"></i>معلومات إضافية</h4>
+                <div class="preview-item"><span class="preview-label">ملاحظات</span><span class="preview-value">${getFieldValue('additionalInfo')}</span></div></div>
+                
+                <div class="preview-card text-center"><hr><p style="color: #1e4a3b; font-weight: 600;"><i class="fas fa-check-circle me-2"></i>تم تعبئة استبيان نظام الرقابة المالية بنجاح</p><p class="text-muted small">تاريخ الإصدار: ${new Date().toLocaleDateString('ar-EG')}</p></div>
+            `;
+            document.getElementById('previewContent').innerHTML = previewHtml;
+        }
+        
+        function resetForm() { 
+            if(confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) location.reload(); 
+        }
+        
+        function exportToExcel() {
+            const companyName = getFieldValue('companyName', 'منشأة');
+            const excelData = [
+                ['استبيان نظام الرقابة المالية', 'خدمة الاستشارات المؤقتة لإعادة الهيكلة'],
+                ['تاريخ التقرير', new Date().toLocaleDateString('ar-EG')],
+                ['اسم المنشأة', companyName],
+                ['المسؤول', getFieldValue('contactPerson')],
+                [],
+                ['1. بيانات المنشأة'],
+                ['اسم المنشأة', getFieldValue('companyName')],
+                ['النشاط الرئيسي', getFieldValue('businessActivity')],
+                ['السنة المالية', getFieldValue('currentFiscalYear')],
+                ['المسؤول', getFieldValue('contactPerson')],
+                ['المسمى الوظيفي', getFieldValue('jobTitle')],
+                ['البريد الإلكتروني', getFieldValue('clientEmail')],
+                ['رقم الهاتف', getFieldValue('clientPhone')],
+                [],
+                ['2. الهيكل التنظيمي للرقابة'],
+                ['إدارة مستقلة للرقابة', getSelectText('hasInternalAudit')],
+                ['عدد العاملين', getFieldValue('auditStaffCount')],
+                ['جهة الإبلاغ', getSelectText('reportsToBoard')],
+                ['استقلالية الرقابة', getSelectText('independenceLevel')],
+                [],
+                ['3. السياسات والإجراءات'],
+                ['دليل السياسات', getSelectText('hasFinancialManual')],
+                ['وضوح التفويضات', getSelectText('authorizationClarity')],
+                ['فصل الواجبات', getSelectText('dutiesSeparation')],
+                ['نقاط الضعف', getFieldValue('policyWeaknesses')],
+                [],
+                ['4. ضوابط المشتريات والمخازن'],
+                ['إجراءات الشراء', getSelectText('purchaseProcedure')],
+                ['اختيار الموردين', getSelectText('supplierSelection')],
+                ['جرد المخزون', getSelectText('inventoryCount')],
+                ['فروق الجرد', getFieldValue('inventoryVariance')],
+                [],
+                ['5. ضوابط النقدية والبنوك'],
+                ['مطابقة كشوف البنوك', getSelectText('bankReconciliation')],
+                ['التوقيعات المطلوبة', getSelectText('signatureRequired')],
+                ['فصل الصرف عن المحاسبة', getSelectText('cashSeparation')],
+                ['الجرد المفاجئ للخزينة', getSelectText('suddenCashCount')],
+                [],
+                ['6. ضوابط الإيرادات والمبيعات'],
+                ['ضوابط استلام النقد', getSelectText('cashReceiptControls')],
+                ['نظام الفواتير', getSelectText('invoicingSystem')],
+                ['إيرادات غير مسجلة', getFieldValue('unrecordedRevenue')],
+                ['خصومات غير مبررة', getFieldValue('unjustifiedDiscounts')],
+                [],
+                ['7. تقييم الرقابة المالية'],
+                ['فعالية النظام', getSelectText('controlEffectiveness')],
+                ['مدى الالتزام', getSelectText('complianceLevel')],
+                ['عدد المخالفات', getFieldValue('violationsCount')],
+                ['نقاط الضعف', getFieldValue('controlWeaknesses')],
+                [],
+                ['8. التدقيق والمراجعة'],
+                ['مراجعة خارجية', getSelectText('externalAudit')],
+                ['نتيجة المراجعة', getSelectText('auditResult')],
+                ['لجنة مراجعة مستقلة', getSelectText('auditCommittee')],
+                ['توصيات غير منفذة', getFieldValue('unimplementedRecommendations')],
+                [],
+                ['9. المخاطر المالية'],
+                ['مستوى المخاطر', getSelectText('financialRiskLevel')],
+                ['أبرز المخاطر', getFieldValue('financialRisks')],
+                ['مقترحات التحسين', getFieldValue('improvementSuggestions')],
+                [],
+                ['10. معلومات إضافية'],
+                ['ملاحظات', getFieldValue('additionalInfo')],
+                [],
+                ['للتواصل: info@takalief.com | +20 104 439 1177'],
+                ['www.takalief.com']
+            ];
+            
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(wb, ws, 'الرقابة_المالية');
+            XLSX.writeFile(wb, `Financial_Control_${companyName.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
+            alert('تم تصدير استبيان Excel بنجاح');
+        }
+        
+        async function exportToPDF(event) {
+            try {
+                const exportBtn = event.target;
+                const originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري إعداد التقرير...';
+                exportBtn.disabled = true;
+                
+                const pdfContainer = document.getElementById('pdf-export-container');
+                pdfContainer.innerHTML = '';
+                pdfContainer.style.opacity = '1';
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.top = '0';
+                pdfContainer.style.left = '0';
+                pdfContainer.style.zIndex = '9999';
+                
+                const companyName = getFieldValue('companyName', 'غير محدد');
+                const contactPerson = getFieldValue('contactPerson', 'غير محدد');
+                const currentDate = new Date().toLocaleDateString('ar-EG');
+                
+                const pdfWrapper = document.createElement('div');
+                pdfWrapper.className = 'pdf-wrapper';
+                pdfWrapper.innerHTML = `
+                    <div class="pdf-cover">
+                        <h1>استبيان نظام الرقابة المالية</h1>
+                        <h3>خدمة الاستشارات المؤقتة لإعادة الهيكلة</h3>
+                        <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-top: 30px; border: 2px solid #52b788;">
+                            <p style="font-size: 18px;"><i class="fas fa-building me-2"></i>المنشأة: ${companyName}</p>
+                            <p style="font-size: 16px;"><i class="fas fa-user me-2"></i>المسؤول: ${contactPerson}</p>
+                            <p style="font-size: 16px;"><i class="fas fa-calendar me-2"></i>تاريخ التقرير: ${currentDate}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="page-break-before: always;">
+                        <h2 class="pdf-section-title">بيانات المنشأة</h2>
+                        <table class="pdf-table">
+                            <tr><th style="width: 35%;">البيان</th><th>القيمة</th> </tr>
+                             <tr><td><strong>اسم المنشأة</strong></td><td>${getFieldValue('companyName')}</td></tr>
+                             <tr><td><strong>النشاط الرئيسي</strong></td><td>${getFieldValue('businessActivity')}</td></tr>
+                             <tr><td><strong>السنة المالية</strong></td><td>${getFieldValue('currentFiscalYear')}</td></tr>
+                             <tr><td><strong>المسؤول</strong></td><td>${getFieldValue('contactPerson')}</td></tr>
+                             <tr><td><strong>المسمى الوظيفي</strong></td><td>${getFieldValue('jobTitle')}</td></tr>
+                             <tr><td><strong>البريد الإلكتروني</strong></td><td>${getFieldValue('clientEmail')}</td></tr>
+                             <tr><td><strong>رقم الهاتف</strong></td><td>${getFieldValue('clientPhone')}</td></tr>
+                             <tr><td><strong>العملة</strong></td><td>${currencyNames[selectedCurrency]}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">الهيكل التنظيمي للرقابة المالية</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>إدارة مستقلة للرقابة</td><td>${getSelectText('hasInternalAudit')}</td></tr>
+                             <tr><td>عدد العاملين</td><td>${getFieldValue('auditStaffCount')}</td></tr>
+                             <tr><td>جهة الإبلاغ</td><td>${getSelectText('reportsToBoard')}</td></tr>
+                             <tr><td>استقلالية الرقابة</td><td>${getSelectText('independenceLevel')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">السياسات والإجراءات المالية</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>دليل السياسات</td><td>${getSelectText('hasFinancialManual')}</td></tr>
+                             <tr><td>وضوح التفويضات</td><td>${getSelectText('authorizationClarity')}</td></tr>
+                             <tr><td>فصل الواجبات</td><td>${getSelectText('dutiesSeparation')}</td></tr>
+                             <tr><td>نقاط الضعف</td><td>${getFieldValue('policyWeaknesses')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">ضوابط المشتريات والمخازن</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>إجراءات الشراء</td><td>${getSelectText('purchaseProcedure')}</td></tr>
+                             <tr><td>اختيار الموردين</td><td>${getSelectText('supplierSelection')}</td></tr>
+                             <tr><td>جرد المخزون</td><td>${getSelectText('inventoryCount')}</td></tr>
+                             <tr><td>فروق الجرد</td><td>${getFieldValue('inventoryVariance')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">ضوابط النقدية والبنوك</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>مطابقة كشوف البنوك</td><td>${getSelectText('bankReconciliation')}</td></tr>
+                             <tr><td>التوقيعات المطلوبة</td><td>${getSelectText('signatureRequired')}</td></tr>
+                             <tr><td>فصل الصرف عن المحاسبة</td><td>${getSelectText('cashSeparation')}</td></tr>
+                             <tr><td>الجرد المفاجئ للخزينة</td><td>${getSelectText('suddenCashCount')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">ضوابط الإيرادات والمبيعات</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>ضوابط استلام النقد</td><td>${getSelectText('cashReceiptControls')}</td></tr>
+                             <tr><td>نظام الفواتير</td><td>${getSelectText('invoicingSystem')}</td></tr>
+                             <tr><td>إيرادات غير مسجلة</td><td>${getFieldValue('unrecordedRevenue')}</td></tr>
+                             <tr><td>خصومات غير مبررة</td><td>${getFieldValue('unjustifiedDiscounts')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">تقييم الرقابة المالية</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>فعالية النظام</td><td>${getSelectText('controlEffectiveness')}</td></tr>
+                             <tr><td>مدى الالتزام</td><td>${getSelectText('complianceLevel')}</td></tr>
+                             <tr><td>عدد المخالفات</td><td>${getFieldValue('violationsCount')}</td></tr>
+                             <tr><td>نقاط الضعف</td><td>${getFieldValue('controlWeaknesses')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">التدقيق والمراجعة</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>مراجعة خارجية</td><td>${getSelectText('externalAudit')}</td></tr>
+                             <tr><td>نتيجة المراجعة</td><td>${getSelectText('auditResult')}</td></tr>
+                             <tr><td>لجنة مراجعة مستقلة</td><td>${getSelectText('auditCommittee')}</td></tr>
+                             <tr><td>توصيات غير منفذة</td><td>${getFieldValue('unimplementedRecommendations')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">تقييم المخاطر المالية</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>مستوى المخاطر</td><td>${getSelectText('financialRiskLevel')}</td></tr>
+                             <tr><td>أبرز المخاطر</td><td>${getFieldValue('financialRisks')}</td></tr>
+                             <tr><td>مقترحات التحسين</td><td>${getFieldValue('improvementSuggestions')}</td></tr>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">معلومات إضافية</h2>
+                        <table class="pdf-table">
+                             <tr><th style="width: 35%;">البيان</th><th>القيمة</th></tr>
+                             <tr><td>ملاحظات</td><td>${getFieldValue('additionalInfo')}</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div style="page-break-before: always; margin-top: 40px;">
+                        <div class="pdf-footer">
+                            <div style="font-size: 20px; font-weight: 700; color: #52b788;">تكاليف - حلول أعمال ذكية</div>
+                            <div>القاهرة - مصر | +20 104 439 1177 | info@takalief.com</div>
+                            <hr style="width: 150px; margin: 15px auto; border: 1px solid #52b788;">
+                            <p>تم تعبئة هذا الاستبيان لتقييم نظام الرقابة المالية للمنشأة</p>
+                            <p>تاريخ الإصدار: ${currentDate}</p>
+                            <p style="margin-top: 20px;">توقيع المسؤول: _________________________</p>
+                            <p>جميع الحقوق محفوظة</p>
+                        </div>
+                    </div>
+                `;
+                
+                pdfContainer.appendChild(pdfWrapper);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const canvas = await html2canvas(pdfContainer, { scale: 2, backgroundColor: '#ffffff', logging: false });
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210;
+                const pageHeight = 297;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                pdf.save(`Financial_Control_${companyName.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`);
+                
+                pdfContainer.innerHTML = '';
+                pdfContainer.style.opacity = '0';
+                pdfContainer.style.position = 'fixed';
+                pdfContainer.style.top = '-99999px';
+                
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+                alert('تم تصدير التقرير بنجاح');
+            } catch (error) {
+                alert('حدث خطأ: ' + error.message);
+                const exportBtn = event.target;
+                exportBtn.innerHTML = '<i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)';
+                exportBtn.disabled = false;
+            }
+        }
+        
+        function init() {
+            refreshPreview();
+            const today = new Date().toISOString().split('T')[0];
+            if (document.getElementById('submissionDate')) document.getElementById('submissionDate').value = today;
+            const symbol = currencySymbols[selectedCurrency];
+            document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>
